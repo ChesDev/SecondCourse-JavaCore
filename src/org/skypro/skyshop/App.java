@@ -8,7 +8,6 @@ public class App {
         ProductBasket productBasket = new ProductBasket();
 
 
-
 //------------------------- Добавление продукта в корзину ---------------------------------------------------------------------------
 
         productBasket.addProduct(new Product("Сыр", 100));
@@ -66,7 +65,6 @@ public class App {
 //------------------------- Получение стоимости пустой корзины ----------------------------------------------------------------------
 
         System.out.println("Получение стоимости пустой корзины");
-        productBasket.printBasket();
         System.out.println("Общая стоимость корзины: " + productBasket.getSumProducts());
         line();
 

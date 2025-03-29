@@ -38,13 +38,15 @@ public class ProductBasket {
     }
 
     public void printBasket() {
+        double sum = 0;
         if (basketIsNotNull()) {
             for (Product product : basket) {
                 if (product != null) {
                     System.out.println(product);
+                    sum += product.getPrice();
                 }
             }
-            System.out.println(getSumProducts());
+            System.out.println(sum);
         } else {
             System.out.println("Корзина пуста!");
         }
