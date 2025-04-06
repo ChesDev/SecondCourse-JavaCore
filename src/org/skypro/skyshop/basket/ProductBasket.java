@@ -39,14 +39,21 @@ public class ProductBasket {
 
     public void printBasket() {
         double sum = 0;
+        int specialCount = 0;
         if (basketIsNotNull()) {
             for (Product product : basket) {
                 if (product != null) {
                     System.out.println(product);
                     sum += product.getPrice();
+                    if (product.isSpecial()){
+                        specialCount++;
+                    }
                 }
             }
-            System.out.println(sum);
+
+            System.out.println("--------------------------------------------------");
+            System.out.printf("Итого: %.2f ₽\n", sum);
+            System.out.printf("Специальных товаров: %d\n", specialCount);
         } else {
             System.out.println("Корзина пуста!");
         }
