@@ -42,13 +42,12 @@ public class ProductBasket {
         int specialCount = 0;
         if (basketIsNotNull()) {
             for (Product product : basket) {
-                if (product != null && product.isSpecial()) {
+                if (product != null) {
                     System.out.println(product);
                     sum += product.getPrice();
-                    specialCount++;
-                } else if (product != null) {
-                    System.out.println(product);
-                    sum += product.getPrice();
+                    if (product.isSpecial()){
+                        specialCount++;
+                    }
                 }
             }
 
