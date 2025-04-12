@@ -4,10 +4,14 @@ import org.skypro.skyshop.search.Searchable;
 
 import java.util.Objects;
 
+
 public abstract class Product implements Searchable {
     private final String name;
 
     public Product(String name) {
+        if (name == null | name.isBlank()) {
+            throw new IllegalArgumentException("Название продукции не может быть пустым.");
+        }
         this.name = name;
     }
 
