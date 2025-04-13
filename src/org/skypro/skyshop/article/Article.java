@@ -5,8 +5,8 @@ import org.skypro.skyshop.search.Searchable;
 import java.util.Objects;
 
 public class Article implements Searchable {
-    private String articleTitle;
-    private String articleText;
+    private final String articleTitle;
+    private final String articleText;
 
     public Article(String articleTitle, String articleText) {
         this.articleTitle = articleTitle;

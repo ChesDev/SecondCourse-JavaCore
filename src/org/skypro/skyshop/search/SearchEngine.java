@@ -1,5 +1,8 @@
 package org.skypro.skyshop.search;
 
+import org.skypro.skyshop.exeptions.BestResultNotFound;
+import org.skypro.skyshop.utilities.ArrayUtil;
+
 import java.util.Arrays;
 
 public final class SearchEngine {
@@ -10,17 +13,11 @@ public final class SearchEngine {
     }
 
     public void add(Searchable searchable) {
-        int Index = getIndex(searchableItems);
-        searchableItems[Index] = searchable;
-    }
-
-    public static <S> int getIndex(S[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                return i;
-            }
+        int Index = ArrayUtil.getIndex(searchableItems, true);
+        if (Index == -1) {
+            throw new IllegalArgumentException("Массив элементов для поиска полон");
         }
-        return -1;
+        searchableItems[Index] = searchable;
     }
 
 
@@ -43,5 +40,46 @@ public final class SearchEngine {
             }
         }
         return results;
+    }
+
+    public static int countMatches(String searchTerm, String query) {
+        if (searchTerm.isEmpty() || query.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0, fromIndex = 0;
+        int queryLength = query.length();
+        while ((fromIndex = searchTerm.indexOf(query, fromIndex)) != -1) {
+            count++;
+            fromIndex += queryLength;
+        }
+
+        return count;
+    }
+
+    public Searchable searchMostRelevant(String query) throws BestResultNotFound {
+        int firstIndex = ArrayUtil.getIndex(searchableItems, false);
+        if (firstIndex == -1) {
+            throw new BestResultNotFound("Массив элементов для поиска пуст");
+        }
+
+        Searchable mostRelevant = searchableItems[firstIndex];
+        int maxCount = countMatches(mostRelevant.getSearchTerm(), query);
+
+        for (Searchable searchable : searchableItems) {
+            if (searchable != null) {
+                int count = countMatches(searchable.getSearchTerm(), query);
+                if (count > maxCount) {
+                    maxCount = count;
+                    mostRelevant = searchable;
+                }
+            }
+        }
+
+        if (maxCount <= 0) {
+            throw new BestResultNotFound("Не найдено совпадений");
+        }
+
+        return mostRelevant;
     }
 }
