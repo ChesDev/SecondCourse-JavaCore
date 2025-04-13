@@ -1,6 +1,7 @@
 package org.skypro.skyshop.search;
 
 import org.skypro.skyshop.exeptions.BestResultNotFound;
+import org.skypro.skyshop.utilities.ArrayUtil;
 
 import java.util.Arrays;
 
@@ -12,26 +13,11 @@ public final class SearchEngine {
     }
 
     public void add(Searchable searchable) {
-        int Index = getNullIndex(searchableItems);
+        int Index = ArrayUtil.getIndex(searchableItems, true);
+        if (Index == -1) {
+            throw new IllegalArgumentException("Массив элементов для поиска полон");
+        }
         searchableItems[Index] = searchable;
-    }
-
-    public static <S> int getNullIndex(S[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public static <S> int getIndex(S[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) {
-                return i;
-            }
-        }
-        return -1;
     }
 
 
@@ -72,7 +58,7 @@ public final class SearchEngine {
     }
 
     public Searchable searchMostRelevant(String query) throws BestResultNotFound {
-        int firstIndex = getIndex(searchableItems);
+        int firstIndex = ArrayUtil.getIndex(searchableItems, false);
         if (firstIndex == -1) {
             throw new BestResultNotFound("Массив элементов для поиска пуст");
         }

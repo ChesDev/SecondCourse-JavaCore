@@ -119,15 +119,20 @@ public class App {
                         "Он всё прячет, всё боится, на всякий случай роет окопы в углу клетки и не доверяет даже своей поилке.");
 
         SearchEngine searchEngine = new SearchEngine(10);
-        searchEngine.add(product1);
-        searchEngine.add(product2);
-        searchEngine.add(product3);
-        searchEngine.add(product4);
-        searchEngine.add(product5);
-        searchEngine.add(article1);
-        searchEngine.add(article2);
-        searchEngine.add(article3);
-        searchEngine.add(article4);
+        try {
+            searchEngine.add(product1);
+            searchEngine.add(product2);
+            searchEngine.add(product3);
+            searchEngine.add(product4);
+            searchEngine.add(product5);
+            searchEngine.add(article1);
+            searchEngine.add(article2);
+            searchEngine.add(article3);
+            searchEngine.add(article4);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Ошибка: " + ex.getMessage());
+            return;
+        }
 
         String query = "Вино";
         Searchable[] searchResults = searchEngine.search(query);
