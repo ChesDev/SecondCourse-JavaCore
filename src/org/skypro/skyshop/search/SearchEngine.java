@@ -1,42 +1,27 @@
 package org.skypro.skyshop.search;
 
-import org.skypro.skyshop.exeptions.BestResultNotFound;
-import org.skypro.skyshop.utilities.ArrayUtil;
+import org.skypro.skyshop.exceptions.BestResultNotFound;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class SearchEngine {
-    private final Searchable[] searchableItems;
-
-    public SearchEngine(int size) {
-        this.searchableItems = new Searchable[size];
-    }
+    private final List<Searchable> searchableItems = new ArrayList<>();
 
     public void add(Searchable searchable) {
-        int Index = ArrayUtil.getIndex(searchableItems, true);
-        if (Index == -1) {
-            throw new IllegalArgumentException("Массив элементов для поиска полон");
+        if (searchable == null) {
+            throw new IllegalArgumentException(
+                    new StringBuilder("Элемент для поиска не может быть null").toString()
+            );
         }
-        searchableItems[Index] = searchable;
+        searchableItems.add(searchable);
     }
 
-
-    public static final int MAX_RESULTS = 5;
-
-    public Searchable[] search(String query) {
-        Searchable[] results = new Searchable[MAX_RESULTS];
-        Arrays.fill(results, null);
-
-        int i = 0;
+    public List<Searchable> search(String query) {
+        List<Searchable> results = new ArrayList<>();
         for (Searchable searchable : searchableItems) {
-            if (searchable == null) {
-                continue;
-            }
             if (searchable.getSearchTerm().contains(query)) {
-                results[i++] = searchable;
-                if (i >= MAX_RESULTS) {
-                    break;
-                }
+                results.add(searchable);
             }
         }
         return results;
@@ -58,26 +43,27 @@ public final class SearchEngine {
     }
 
     public Searchable searchMostRelevant(String query) throws BestResultNotFound {
-        int firstIndex = ArrayUtil.getIndex(searchableItems, false);
-        if (firstIndex == -1) {
-            throw new BestResultNotFound("Массив элементов для поиска пуст");
+        if (searchableItems.isEmpty()) {
+            throw new BestResultNotFound(
+                    new StringBuilder("Массив элементов для поиска пуст").toString()
+            );
         }
 
-        Searchable mostRelevant = searchableItems[firstIndex];
-        int maxCount = countMatches(mostRelevant.getSearchTerm(), query);
+        Searchable mostRelevant = null;
+        int maxCount = -1;
 
         for (Searchable searchable : searchableItems) {
-            if (searchable != null) {
-                int count = countMatches(searchable.getSearchTerm(), query);
-                if (count > maxCount) {
-                    maxCount = count;
-                    mostRelevant = searchable;
-                }
+            int count = countMatches(searchable.getSearchTerm(), query);
+            if (count > maxCount) {
+                maxCount = count;
+                mostRelevant = searchable;
             }
         }
 
         if (maxCount <= 0) {
-            throw new BestResultNotFound("Не найдено совпадений");
+            throw new BestResultNotFound(
+                    new StringBuilder("Не найдено совпадений").toString()
+            );
         }
 
         return mostRelevant;

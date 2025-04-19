@@ -2,20 +2,39 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.Objects;
+import java.util.*;
 
 public class ProductBasket {
-    private final Product[] basket = new Product[5];
+    private final List<Product> basket = new ArrayList<>();
+    private final List<Product> deletedProducts = new LinkedList<>();
 
     public void addProduct(Product product) {
-        for (int i = 0; i < basket.length; i++) {
-            if (basket[i] == null) {
-                basket[i] = product;
-                return;
+        basket.add(product);
+    }
+
+    public List<Product> deleteProductsByName(String name) {
+        deletedProducts.clear();
+        Iterator<Product> iterator = basket.iterator();
+        while (iterator.hasNext()) {
+            Product product = iterator.next();
+            if (product != null && Objects.equals(product.getName(), name)) {
+                deletedProducts.add(product);
+                iterator.remove();
             }
         }
-        System.out.println("Невозможно добавить продукт");
+        return deletedProducts;
+    }
 
+    public void printDeletedProducts() {
+        StringBuilder sb = new StringBuilder("Список удаленных продуктов:\n");
+        if (!deletedProducts.isEmpty()) {
+            for (Product product : deletedProducts) {
+                sb.append(product).append("\n");
+            }
+        } else {
+            sb.append("Список пуст");
+        }
+        System.out.println(sb.toString());
     }
 
     public double getSumProducts() {
@@ -29,34 +48,34 @@ public class ProductBasket {
     }
 
     private boolean basketIsNotNull() {
-        for (Product product : basket) {
-            if (product != null) {
-                return true;
-            }
-        }
-        return false;
+        return !basket.isEmpty();
     }
 
     public void printBasket() {
+        if (!basketIsNotNull()) {
+            System.out.println("Корзина пуста!");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
         double sum = 0;
         int specialCount = 0;
-        if (basketIsNotNull()) {
-            for (Product product : basket) {
-                if (product != null) {
-                    System.out.println(product);
-                    sum += product.getPrice();
-                    if (product.isSpecial()){
-                        specialCount++;
-                    }
+
+        for (Product product : basket) {
+            if (product != null) {
+                sb.append(product).append("\n");
+                sum += product.getPrice();
+                if (product.isSpecial()) {
+                    specialCount++;
                 }
             }
-
-            System.out.println("--------------------------------------------------");
-            System.out.printf("Итого: %.2f ₽\n", sum);
-            System.out.printf("Специальных товаров: %d\n", specialCount);
-        } else {
-            System.out.println("Корзина пуста!");
         }
+
+        sb.append("--------------------------------------------------\n")
+                .append(String.format("Итого: %.2f ₽\n", sum))
+                .append(String.format("Специальных товаров: %d\n", specialCount));
+
+        System.out.println(sb.toString());
     }
 
     public boolean checkProduct(String name) {
@@ -69,10 +88,6 @@ public class ProductBasket {
     }
 
     public void cleanBasket() {
-        for (int i = 0; i < basket.length; i++) {
-            if (basket[i] != null) {
-                basket[i] = null;
-            }
-        }
+        basket.clear();
     }
 }
