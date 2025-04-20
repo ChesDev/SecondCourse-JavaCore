@@ -5,20 +5,20 @@ import org.skypro.skyshop.search.Searchable;
 import java.util.Objects;
 
 public class Article implements Searchable {
-    private final StringBuilder articleTitle;
-    private final StringBuilder articleText;
+    private final String articleTitle;
+    private final String articleText;
 
     public Article(String articleTitle, String articleText) {
-        this.articleTitle = new StringBuilder(articleTitle);
-        this.articleText = new StringBuilder(articleText);
+        this.articleTitle = articleTitle;
+        this.articleText = articleText;
     }
 
     public String getArticleTitle() {
-        return articleTitle.toString();
+        return articleTitle;
     }
 
     public String getArticleText() {
-        return articleText.toString();
+        return articleText;
     }
 
     @Override
@@ -44,12 +44,11 @@ public class Article implements Searchable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return Objects.equals(articleTitle.toString(), article.articleTitle.toString()) &&
-                Objects.equals(articleText.toString(), article.articleText.toString());
+        return Objects.equals(articleTitle, article.articleTitle) && Objects.equals(articleText, article.articleText);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(articleTitle.toString(), articleText.toString());
+        return Objects.hash(articleTitle, articleText);
     }
 }

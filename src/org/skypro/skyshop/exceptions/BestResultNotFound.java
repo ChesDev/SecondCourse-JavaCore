@@ -1,4 +1,4 @@
-package org.skypro.skyshop.exeptions;
+package org.skypro.skyshop.exceptions;
 
 import java.io.IOException;
 
