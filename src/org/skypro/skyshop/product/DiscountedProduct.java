@@ -9,18 +9,21 @@ public class DiscountedProduct extends Product {
     public DiscountedProduct(String name, double price, int discount) {
         super(name);
         if (price <= 0) {
-            throw new IllegalArgumentException("Цена продукции не может быть отрицательной или равна нулю.");
+            throw new IllegalArgumentException(
+                    new StringBuilder("Цена продукции не может быть отрицательной или равна нулю.").toString()
+            );
         }
         this.price = price;
         if (discount < 0 || discount > 100) {
-            throw new IllegalArgumentException("Размер скидки должен быть в диапазоне от 0 до 100%.");
+            throw new IllegalArgumentException(
+                    new StringBuilder("Размер скидки должен быть в диапазоне от 0 до 100%.").toString()
+            );
         }
         this.discount = discount;
     }
 
     public double setDiscountedPrice(double price, int discount) {
-        price = price - (price / 100 * discount);
-        return price;
+        return price - (price / 100 * discount);
     }
 
     @Override
@@ -35,11 +38,19 @@ public class DiscountedProduct extends Product {
 
     @Override
     public String toString() {
-        return "Скидка! %s: %.2f ₽ (%d%%)".formatted(getName(), getPrice(), discount);
+        return new StringBuilder("Скидка! ")
+                .append(getName())
+                .append(": ")
+                .append(String.format("%.2f", getPrice()))
+                .append(" ₽ (")
+                .append(discount)
+                .append("%)")
+                .toString();
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         DiscountedProduct that = (DiscountedProduct) o;

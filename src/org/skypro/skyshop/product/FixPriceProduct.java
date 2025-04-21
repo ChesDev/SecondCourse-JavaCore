@@ -19,6 +19,10 @@ public class FixPriceProduct extends Product {
 
     @Override
     public String toString() {
-        return "Фикс. цена! %s: %.2f ₽ ".formatted(getName(), getPrice());
+        return new StringBuilder("Фикс. цена! ")
+                .append(getName())
+                .append(": ")
+                .append(String.format("%.2f ₽", getPrice()))
+                .toString();
     }
 }

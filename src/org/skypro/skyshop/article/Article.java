@@ -23,7 +23,10 @@ public class Article implements Searchable {
 
     @Override
     public String toString() {
-        return articleTitle + ".\n" + articleText;
+        return new StringBuilder(articleTitle)
+                .append(".\n")
+                .append(articleText)
+                .toString();
     }
 
     @Override
@@ -38,9 +41,10 @@ public class Article implements Searchable {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Article aricle = (Article) o;
-        return Objects.equals(articleTitle, aricle.articleTitle) && Objects.equals(articleText, aricle.articleText);
+        Article article = (Article) o;
+        return Objects.equals(articleTitle, article.articleTitle) && Objects.equals(articleText, article.articleText);
     }
 
     @Override
