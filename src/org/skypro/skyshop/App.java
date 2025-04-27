@@ -7,6 +7,7 @@ import org.skypro.skyshop.search.*;
 import org.skypro.skyshop.article.Article;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class App {
@@ -32,7 +33,6 @@ public class App {
         printSeparator();
 
 
-
         //Демонстрация метода удаления продукта по имени из корзины
         System.out.print(new StringBuilder()
                 .append("Демонстрация метода удаления продукта по имени из корзины\n")
@@ -40,18 +40,15 @@ public class App {
         productBasket.printBasket();
 
         System.out.println(new StringBuilder("\nУдаляем продукт с именем - Колбаса"));
-        productBasket.deleteProductsByName("Колбаса");
-        productBasket.printDeletedProducts();
+        productBasket.deleteAndPrintProductsByName("Колбаса");
         System.out.println();
         productBasket.printBasket();
 
         System.out.println(new StringBuilder("\nУдаляем продукт с именем - Удочка"));
-        productBasket.deleteProductsByName("Удочка");
-        productBasket.printDeletedProducts();
+        productBasket.deleteAndPrintProductsByName("Удочка");
         System.out.println();
         productBasket.printBasket();
         printSeparator();
-
 
 
         //Печать содержимого корзины с несколькими товарами
@@ -60,14 +57,12 @@ public class App {
         printSeparator();
 
 
-
         //Получение стоимости корзины с несколькими товарами
         System.out.println(new StringBuilder()
                 .append("Получение стоимости корзины с несколькими товарами\n")
                 .append("Общая стоимость корзины: ")
                 .append(productBasket.getSumProducts()));
         printSeparator();
-
 
 
         //Поиск товара, который есть в корзине
@@ -80,7 +75,6 @@ public class App {
         printSeparator();
 
 
-
         //Поиск товара, которого нет в корзине
         name = "Ветчина";
         System.out.println(new StringBuilder()
@@ -91,13 +85,11 @@ public class App {
         printSeparator();
 
 
-
         //Очистка корзины
         System.out.println(new StringBuilder("Печать содержимого корзины перед очисткой"));
         productBasket.printBasket();
         productBasket.cleanBasket();
         printSeparator();
-
 
 
         //Печать содержимого пустой корзины
@@ -106,14 +98,12 @@ public class App {
         printSeparator();
 
 
-
         //Получение стоимости пустой корзины
         System.out.println(new StringBuilder()
                 .append("Получение стоимости пустой корзины\n")
                 .append("Общая стоимость корзины: ")
                 .append(productBasket.getSumProducts()));
         printSeparator();
-
 
 
         //Поиск товара по имени в пустой корзине
@@ -126,7 +116,6 @@ public class App {
         printSeparator();
 
 
-
         //Тестирование движка поиска
         Article article1 = new Article("Обучаем хомяка понимать ООП",
                 """
@@ -136,20 +125,20 @@ public class App {
                         В этой статье мы проведем параллели между повадками хомяков и основными принципами ООП,
                         чтобы сделать обучение увлекательным и доступным.""");
 
-        Article article2 = new Article("Маленькие мастера уюта",
+        Article article2 = new Article("Маленькие мастера уюта. Хомяки",
                 """
                         Хомяки — это крошечные пушистики, чья жизнь выглядит как нескончаемый сериал\s
                         о еде, сне и неожиданном беге в колесе. Эти грызуны, несмотря на свои скромные размеры,
                         обладают харизмой, достойной блокбастера.""");
 
-        Article article3 = new Article("Карманные интроверты",
+        Article article3 = new Article("Карманные интроверты. Хомяки",
                 """
                         Эти ребята обожают уединение. Посади двух взрослых хомяков в одну клетку — и это уже не милый мультик,
                         а триллер со смертельным исходом. Особенно, если это сирийские хомяки: у них личное пространство размером с Сахару.
                         В общем, если вам нужен пушистый социопат, который смотрит на мир с подозрением,\s
                         но всё равно милый — хомяк подойдёт идеально.""");
 
-        Article article4 = new Article("Генералы диванной обороны",
+        Article article4 = new Article("Генералы диванной обороны. Хомяки",
                 """
                         Хомяк — это животное, которое выглядит как комочек счастья, но ведёт себя как ветеран постапокалипсиса.
                         Он всё прячет, всё боится, на всякий случай роет окопы в углу клетки и не доверяет даже своей поилке.""");
@@ -161,6 +150,8 @@ public class App {
             searchEngine.add(product3);
             searchEngine.add(product4);
             searchEngine.add(product5);
+            searchEngine.add(product6);
+            searchEngine.add(product3);
             searchEngine.add(article1);
             searchEngine.add(article2);
             searchEngine.add(article3);
@@ -170,7 +161,7 @@ public class App {
             return;
         }
 
-        String query = "Вино";
+        String query = "Колбаса";
         System.out.println(new StringBuilder()
                 .append("Результаты поиска ")
                 .append(query)
@@ -212,8 +203,9 @@ public class App {
                 .append("\n"));
 
         System.out.println(new StringBuilder("Представление результатов поиска в виде имён:"));
-        List<Searchable> searchResults = searchEngine.search(query);
-        for (Searchable searchResult : searchResults) {
+        Map<String, Searchable> searchResults = searchEngine.search(query);
+        for (Map.Entry<String, Searchable> entry : searchResults.entrySet()) {
+            Searchable searchResult = entry.getValue();
             if (searchResult != null) {
                 System.out.println(new StringBuilder()
                         .append("Имя searchable: ")
@@ -221,7 +213,6 @@ public class App {
             }
         }
         printSeparator();
-
 
 
         //Тестирование исключений класса Product и его наследников
@@ -305,7 +296,6 @@ public class App {
                     .append("\n"));
         }
         printSeparator();
-
 
 
         //Тестирование обновленного движка поиска
