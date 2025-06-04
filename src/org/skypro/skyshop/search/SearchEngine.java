@@ -2,31 +2,31 @@ package org.skypro.skyshop.search;
 
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public final class SearchEngine {
-    private final List<Searchable> searchableItems = new ArrayList<>();
+    private final Set<Searchable> searchableItems = new HashSet<>();
 
     public void add(Searchable searchable) {
         if (searchable == null) {
-            throw new IllegalArgumentException(
-                    new StringBuilder("Элемент для поиска не может быть null").toString()
-            );
+            throw new IllegalArgumentException("Элемент для поиска не может быть null");
         }
         searchableItems.add(searchable);
     }
 
-    public Map<String, Searchable> search(String query) {
-        Map<String, Searchable> results = new TreeMap<>();
+    public Set<Searchable> search(String query) {
+        Comparator<Searchable> comparator = Comparator
+                .comparingInt((Searchable s) -> s.getSearchTerm().length()).reversed()
+                .thenComparing(Searchable::getSearchTerm);
+
+        Set<Searchable> results = new TreeSet<>(comparator);
+        if (query == null || query.isEmpty()) {
+            return results;
+        }
+
         for (Searchable searchable : searchableItems) {
             if (searchable.getSearchTerm().contains(query)) {
-                String key = searchable.getSearchTerm();
-                if (!results.containsKey(key)) {
-                    results.put(key, searchable);
-                }
+                results.add(searchable);
             }
         }
         return results;
@@ -48,10 +48,12 @@ public final class SearchEngine {
     }
 
     public Searchable searchMostRelevant(String query) throws BestResultNotFound {
+        if (query == null || query.isEmpty()) {
+            throw new IllegalArgumentException("Запрос не может быть пустым");
+        }
+
         if (searchableItems.isEmpty()) {
-            throw new BestResultNotFound(
-                    new StringBuilder("Массив элементов для поиска пуст").toString()
-            );
+            throw new BestResultNotFound("Массив элементов для поиска пуст");
         }
 
         Searchable mostRelevant = null;
@@ -66,9 +68,7 @@ public final class SearchEngine {
         }
 
         if (maxCount <= 0) {
-            throw new BestResultNotFound(
-                    new StringBuilder("Не найдено совпадений").toString()
-            );
+            throw new BestResultNotFound("Не найдено совпадений");
         }
 
         return mostRelevant;
