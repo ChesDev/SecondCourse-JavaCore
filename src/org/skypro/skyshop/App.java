@@ -8,6 +8,7 @@ import org.skypro.skyshop.article.Article;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class App {
@@ -203,14 +204,12 @@ public class App {
                 .append("\n"));
 
         System.out.println(new StringBuilder("Представление результатов поиска в виде имён:"));
-        Map<String, Searchable> searchResults = searchEngine.search(query);
-        for (Map.Entry<String, Searchable> entry : searchResults.entrySet()) {
-            Searchable searchResult = entry.getValue();
-            if (searchResult != null) {
-                System.out.println(new StringBuilder()
-                        .append("Имя searchable: ")
-                        .append(searchResult.getStringRepresentation()));
-            }
+        Set<Searchable> searchResults = searchEngine.search(query);
+        System.out.println(new StringBuilder("Результаты поиска ")
+                .append(query)
+                .append(": "));
+        for (Searchable result : searchResults) {
+            System.out.println(" - " + result.getStringRepresentation());
         }
         printSeparator();
 
