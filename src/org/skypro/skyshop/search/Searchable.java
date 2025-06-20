@@ -6,6 +6,7 @@ public interface Searchable {
 
     String getContentType();
 
+
     default String getStringRepresentation() {
         return new StringBuilder()
                 .append(getSearchTerm())

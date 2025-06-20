@@ -3,6 +3,8 @@ package org.skypro.skyshop.search;
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 public final class SearchEngine {
     private final Set<Searchable> searchableItems = new HashSet<>();
@@ -19,17 +21,9 @@ public final class SearchEngine {
                 .comparingInt((Searchable s) -> s.getSearchTerm().length()).reversed()
                 .thenComparing(Searchable::getSearchTerm);
 
-        Set<Searchable> results = new TreeSet<>(comparator);
-        if (query == null || query.isEmpty()) {
-            return results;
-        }
-
-        for (Searchable searchable : searchableItems) {
-            if (searchable.getSearchTerm().contains(query)) {
-                results.add(searchable);
-            }
-        }
-        return results;
+        return searchableItems.stream()
+                .filter(searchable -> searchable.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toCollection(() -> new TreeSet<>((comparator))));
     }
 
     public static int countMatches(String searchTerm, String query) {

@@ -3,6 +3,7 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ProductBasket {
     private final Map<String, List<Product>> basket = new HashMap<>();
@@ -21,70 +22,48 @@ public class ProductBasket {
 
     public void deleteAndPrintProductsByName(String name) {
         List<Product> deletedProducts = deleteProductsByName(name);
-        StringBuilder sb = new StringBuilder("Список удаленных продуктов:\n");
+        System.out.println("Список удаленных продуктов:\n");
         if (deletedProducts == null || deletedProducts.isEmpty()) {
-            sb.append("Список пуст");
+            System.out.println("Список пуст");
         } else {
-            for (Product product : deletedProducts) {
-                sb.append(product).append("\n");
-            }
+            deletedProducts.forEach(System.out::println);
         }
-        System.out.println(sb);
     }
 
     public double getSumProducts() {
-        double sum = 0;
-        for (List<Product> products : basket.values()) {
-            for (Product product : products) {
-                if (product != null) {
-                    sum += product.getPrice();
-                }
-            }
-        }
-        return sum;
+        return basket.values().stream().flatMap(Collection::stream)
+                .mapToDouble(Product::getPrice)
+                .sum();
     }
 
-    private boolean basketIsNotNull() {
-        return !basket.isEmpty();
+    private boolean basketIsNull() {
+        return basket.isEmpty();
+    }
+
+    private long getSpecialCount() {
+        return basket.values().stream().flatMap(Collection::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
     public void printBasket() {
-        if (!basketIsNotNull()) {
+        if (basketIsNull()) {
             System.out.println("Корзина пуста!");
             return;
         }
 
         StringBuilder sb = new StringBuilder();
-        double sum = 0;
-        int specialCount = 0;
-        for (List<Product> products : basket.values()) {
-            for (Product product : products) {
-                if (product != null) {
-                    sb.append(product).append("\n");
-                    sum += product.getPrice();
-                    if (product.isSpecial()) {
-                        specialCount++;
-                    }
-                }
-            }
-        }
-
-        sb.append("--------------------------------------------------\n")
-                .append(String.format("Итого: %.2f ₽\n", sum))
-                .append(String.format("Специальных товаров: %d\n", specialCount));
-
-        System.out.println(sb.toString());
+        Stream<Product> productBasket = basket.values().stream().flatMap(Collection::stream);
+            productBasket.forEach(System.out::println);
+            sb.append("--------------------------------------------------\n")
+                .append(String.format("Итого: %.2f ₽\n", getSumProducts()))
+                .append(String.format("Специальных товаров: %d\n", getSpecialCount()));
+        System.out.println(sb);
     }
 
     public boolean checkProduct(String name) {
-        for (List<Product> products : basket.values()) {
-            for (Product product : products) {
-                if (product != null && Objects.equals(product.getName(), name)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return basket.values().stream().flatMap(Collection::stream)
+                .anyMatch(p->p.getName().equalsIgnoreCase(name));
     }
 
     public void cleanBasket() {
